@@ -38,7 +38,7 @@ const Cart = (props) => {
                 body: JSON.stringify({
                     tableNo: Number(tableNumber),
                     cost: Number(cost),
-                    order: cart.map(({id, name, price, quantity}) => ({id, name, price, quantity})),
+                    order: cart.cart,
                     paymentMethod: paymentMethod
                 })
             });
