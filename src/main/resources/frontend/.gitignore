@@ -25,7 +25,7 @@ ios/.xcode.env.local
 # Android/IntelliJ
 #
 build/
-../../../../../../../Semestr 6/ZPSM Projekt/DishQR/.idea
+.idea
 .gradle
 local.properties
 *.iml

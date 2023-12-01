@@ -1,11 +1,11 @@
 import React from 'react';
-import {Button, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 
 const AboutUs = (props) => {
 
     return (
         <View>
-            <Button onPress={() => props.navigation.navigate('AboutUs2')}>About us</Button>
+            <Text>About us</Text>
         </View>
     );
 };

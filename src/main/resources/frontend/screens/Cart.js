@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
-import {clearCart, decrementQty, incrementQty, setTableNumber} from '../reducer/CartReducer';
-import { useDispatch, useSelector } from "react-redux"
 import Toast from 'react-native-toast-message';
 import Dialog from "react-native-dialog";
+import {useDispatch, useSelector} from 'react-redux';
+import {acceptOrder, addToCart, removeFromCart, savePaymentMethod} from '../actions/actions';
+import axios from 'axios';
 
 const Cart = (props) => {
 
-    const [paymentMethod, setPaymentMethod] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [tableNumber, setTableNumber] = useState('');
 
     const dispatch = useDispatch();
 
@@ -24,41 +26,58 @@ const Cart = (props) => {
         let a = sendOrder();
     };
 
-    const cart = useSelector((state) => state.cart.cart);
-    const tableNumber = useSelector((state) => state.cart.tableNumber);
-    const cost = (cart.reduce((sum, cost) => {return sum + (cost.price * cost.quantity)}, 0)).toFixed(2);
+    const cart = useSelector((state) => state.cart.dishes);
+    const tableNumberId = useSelector((state) => state.cart.tableNoId);
+    const cost = useSelector((state) => state.cart.cost);
 
     const sendOrder = async () => {
-        try {
-            const response = await fetch('http://192.168.1.2:8080/order/sendOrder', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    tableNo: Number(tableNumber),
-                    cost: Number(cost),
-                    order: cart.cart,
-                    paymentMethod: paymentMethod
-                })
-            });
+        dispatch(acceptOrder());
+        setVisible(false);
+        Toast.show({
+            type: 'success',
+            text1: 'Złożono zamówienie',
+        })
+        setPaymentMethod('');
+    };
 
-            setVisible(false);
-            Toast.show({
-                type: 'success',
-                text1: 'Złożono zamówienie',
-            });
-            dispatch(clearCart());
-            setTableNumber('');
-            setPaymentMethod('');
-        } catch (error) {
-            console.error(error);
-            Toast.show({
-                type: 'error',
-                text1: 'Nie udało się złożyć zamówienia',
-                text2: error
-            });
+    useEffect(() => {
+        const fetchData = async () => {
+            if (tableNumberId !== '' && tableNumberId !== null) {
+                try {
+                    const response = await axios.get('http://192.168.1.2:8080/qrCode/getValue/' + tableNumberId, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    setTableNumber(response.data.qrCode);
+                } catch (error) {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Nie udało się pobrać numeru stolika',
+                    });
+                }
+            }
+        };
+
+        let a = fetchData();
+
+        // The cleanup function
+        return () => {};
+    }, [tableNumberId]);
+
+    useEffect(() => {
+        if(paymentMethod !== '' && paymentMethod !== null) {
+            dispatch(savePaymentMethod(paymentMethod));
         }
+    }, [paymentMethod]);
+
+
+    const addItemToCart = (item) => {
+        dispatch(addToCart(item.id, "fromCart"));
+    };
+
+    const removeItemFromCart = (item) => {
+        dispatch(removeFromCart(item.id));
     };
 
     const validate = () => {
@@ -99,20 +118,20 @@ const Cart = (props) => {
                             {
                                 cart.map((dish, index) => {
                                     return (
-                                        <View key={index + '_soup'} style={styles.dishContainer}>
+                                        <View key={index} style={styles.dishContainer}>
                                             <View style={styles.dishDescription}>
-                                                <Text style={styles.dishName}>{dish.name}</Text>
-                                                <Text style={styles.dishPrice}> {dish.price} x{dish.quantity}: {(dish.price * dish.quantity).toFixed(2)} zł</Text>
+                                                <Text style={styles.dishName}>{dish.dish.name}</Text>
+                                                <Text style={styles.dishPrice}> {dish.dish.price} x{dish.quantity}: {(dish.dish.price * dish.quantity).toFixed(2)} zł</Text>
                                             </View>
                                             <View style={styles.dishAction}>
                                                 <TouchableOpacity onPress={() => {
-                                                    dispatch(decrementQty(dish))
+                                                    removeItemFromCart(dish.dish)
                                                 }} style={styles.controlButton}>
                                                     <Text style={styles.controlButtonText}>-</Text>
                                                 </TouchableOpacity>
                                                 <Text style={styles.quantity}>{dish.quantity}</Text>
                                                 <TouchableOpacity onPress={() => {
-                                                    dispatch(incrementQty(dish))
+                                                    addItemToCart(dish.dish)
                                                 }} style={styles.controlButton}>
                                                     <Text style={styles.controlButtonText}>+</Text>
                                                 </TouchableOpacity>

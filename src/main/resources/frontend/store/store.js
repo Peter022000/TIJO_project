@@ -1,8 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
 import CartReducer from "../reducer/CartReducer";
+import { configureStore } from '@reduxjs/toolkit';
+import thunk from 'redux-thunk';
 
-export default configureStore({
-    reducer:{
-        cart:CartReducer
-    }
-})
+const store = configureStore({
+    reducer: {
+        cart: CartReducer,
+    },
+    middleware: [thunk],
+});
+
+export default store;

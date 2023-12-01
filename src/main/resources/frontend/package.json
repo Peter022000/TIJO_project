@@ -3,17 +3,18 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "../../../../../../../Semestr 6/ZPSM Projekt/DishQR/node_modules/.bin/react-native run-android",
-    "ios": "../../../../../../../Semestr 6/ZPSM Projekt/DishQR/node_modules/.bin/react-native run-ios",
-    "lint": "../../../../../../../Semestr 6/ZPSM Projekt/DishQR/node_modules/.bin/eslint .",
-    "start": "../../../../../../../Semestr 6/ZPSM Projekt/DishQR/node_modules/.bin/react-native start",
-    "test": "../../../../../../../Semestr 6/ZPSM Projekt/DishQR/node_modules/.bin/jest"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "lint": "eslint .",
+    "start": "react-native start",
+    "test": "jest"
   },
   "dependencies": {
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/bottom-tabs": "6.5.7",
     "@react-navigation/native": "6.1.6",
     "@reduxjs/toolkit": "1.9.5",
+    "axios": "^1.6.2",
     "react": "18.2.0",
     "react-native": "0.71.4",
     "react-native-dialog": "9.3.0",
@@ -25,6 +26,7 @@
     "react-native-vision-camera": "2.15.4",
     "react-redux": "8.0.5",
     "redux": "4.2.1",
+    "redux-thunk": "^2.4.2",
     "vision-camera-code-scanner": "0.2.0"
   },
   "devDependencies": {

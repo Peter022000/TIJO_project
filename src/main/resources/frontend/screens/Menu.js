@@ -10,7 +10,7 @@ import {
     RefreshControl,
 } from 'react-native';
 import { useDispatch } from "react-redux";
-import { addToCart } from "../reducer/CartReducer";
+import { addToCart } from '../actions/actions';
 
 const Menu = (props) => {
 
@@ -23,7 +23,7 @@ const Menu = (props) => {
     const dispatch = useDispatch();
 
     const addItemToCart = (item) => {
-        dispatch(addToCart(item));
+        dispatch(addToCart(item.id, "fromMenu"));
     };
 
     const getDishes = async () => {
@@ -54,80 +54,55 @@ const Menu = (props) => {
         });
     }, [props.navigation]);
 
+    const renderCategory = (categoryName, dishes, index) => (
+        <View style={styles.categoryContainer} key={`category_${index}`}>
+            <TouchableOpacity onPress={() => setSelection(selection === index ? -1 : index)}>
+                <Text style={styles.menuHeader}>{categoryName}</Text>
+            </TouchableOpacity>
+
+            {selection === index &&
+                dishes.map((dish, dishIndex) => (
+                    <View key={`${index}_${dishIndex}_dish`} style={styles.dishContainer}>
+                        <View style={styles.dishDescription}>
+                            <Text style={styles.dishName}>{dish.name}</Text>
+                            <Text style={styles.dishPrice}>{dish.price} zł</Text>
+                            <Text style={styles.dishIngredients}>{dish.ingredients.join(', ')}</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => addItemToCart(dish)} style={styles.dishAction}>
+                            <Image
+                                source={require("../assets/icons/add.png")}
+                                resizeMode={'contain'}
+                                style={{
+                                    width: 30,
+                                    height: 30,
+                                }}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                ))}
+        </View>
+    );
+
+
     return (
         <ScrollView
             contentContainerStyle={styles.container}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
+            }
+        >
             <View>
                 <View style={styles.menuHeaderContainer}>
                     <Text style={styles.menuHeader}>Menu</Text>
                 </View>
-                {isLoading ? <ActivityIndicator/> : (
+                {isLoading ? (
+                    <ActivityIndicator />
+                ) : (
                     <>
-                        <View style={styles.categoryContainer}>
-                            <TouchableOpacity onPress={() => {(selection === 0) ? setSelection(-1) : setSelection(0)}}>
-                                <Text style={styles.menuHeader}>Zupy</Text>
-                            </TouchableOpacity>
-
-                            {
-                                (selection === 0) ?
-                                    soups.map((dish, index) => {
-                                        return(
-                                            <View key={index + '_soups'} style={styles.dishContainer}>
-                                                <View style={styles.dishDescription}>
-                                                    <Text style={styles.dishName}>{dish.name}</Text>
-                                                    <Text style={styles.dishPrice}>{dish.price} zł</Text>
-                                                    <Text style={styles.dishIngredients}>{dish.ingredients.join(', ')}</Text>
-                                                </View>
-                                                <TouchableOpacity onPress={() =>{addItemToCart(dish)}} style={styles.dishAction}>
-                                                    <Image
-                                                        source={require("../assets/icons/add.png")}
-                                                        resizeMode={'contain'}
-                                                        style={{
-                                                            width: 30,
-                                                            height: 30,
-                                                        }}
-                                                    />
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }) : <></>
-                            }
-                        </View>
-                        <View style={styles.categoryContainer}>
-                            <TouchableOpacity onPress={() => (selection === 1) ? setSelection(-1) : setSelection(1)}>
-                                <Text style={styles.menuHeader}>Dania główne</Text>
-                            </TouchableOpacity>
-
-                            {(selection === 1) ?
-                                mainCourse.map((dish, index) => {
-                                    return(
-                                        <View key={index + '_main'} style={styles.dishContainer}>
-                                            <View style={styles.dishDescription}>
-                                                <Text style={styles.dishName}>{dish.name}</Text>
-                                                <Text style={styles.dishPrice}>{dish.price} zł</Text>
-                                                <Text style={styles.dishIngredients}>{dish.ingredients.join(', ')}</Text>
-                                            </View>
-                                            <TouchableOpacity onPress={() =>{addItemToCart(dish)}} style={styles.dishAction}>
-                                                <Image
-                                                    source={require("../assets/icons/add.png")}
-                                                    resizeMode={'contain'}
-                                                    style={{
-                                                        width: 30,
-                                                        height: 30,
-                                                    }}
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    )
-                                }) : <></>
-                            }
-                        </View>
+                        {renderCategory("Zupy", soups, 0)}
+                        {renderCategory("Dania główne", mainCourse, 1)}
                     </>
                 )}
-
             </View>
         </ScrollView>
     );

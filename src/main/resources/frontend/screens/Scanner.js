@@ -4,7 +4,6 @@ import { useCameraDevices } from 'react-native-vision-camera';
 import { Camera } from 'react-native-vision-camera';
 import { useScanBarcodes, BarcodeFormat } from 'vision-camera-code-scanner';
 import { useDispatch } from 'react-redux';
-import {clearCart, setTableNumber} from '../reducer/CartReducer';
 import Toast from 'react-native-toast-message';
 
 const Scanner = (props) => {
