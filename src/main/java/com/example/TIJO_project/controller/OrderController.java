@@ -6,6 +6,10 @@ import com.example.TIJO_project.mapper.DishMapper;
 import com.example.TIJO_project.model.Dish;
 import com.example.TIJO_project.repository.DishRepository;
 import com.example.TIJO_project.service.OrderService;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,10 @@ public class OrderController {
     private final DishMapper dishMapper;
 
     @PostMapping(path = "/acceptOrder")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
+    })
     public ResponseEntity<?> acceptOrder(@RequestBody(required=false) OrderDto orderDto){
 
         return orderService.acceptOrder(orderDto);
@@ -37,6 +45,10 @@ public class OrderController {
     }
 
     @PostMapping(path = "/addToOrder")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
+    })
     public ResponseEntity<?> addToOrder(@RequestBody(required=false) OrderDto orderDto, @RequestParam String dishId){
 
         Optional<Dish> dish = dishRepository.findById(dishId);
@@ -50,6 +62,10 @@ public class OrderController {
     }
 
     @PostMapping(path = "/removeFromOrder")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
+    })
     public ResponseEntity<?> removeFromOrder(@RequestBody(required=false) OrderDto orderDto, @RequestParam String dishId){
 
         Optional<Dish> dish = dishRepository.findById(dishId);

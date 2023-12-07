@@ -8,7 +8,6 @@ import axios from 'axios';
 
 const Cart = (props) => {
 
-    const [paymentMethod, setPaymentMethod] = useState(null);
     const [visible, setVisible] = useState(false);
     const [tableNumber, setTableNumber] = useState('');
 
@@ -29,6 +28,7 @@ const Cart = (props) => {
     const cart = useSelector((state) => state.cart.dishes);
     const tableNumberId = useSelector((state) => state.cart.tableNoId);
     const cost = useSelector((state) => state.cart.cost);
+    const paymentMethod = useSelector((state) => state.cart.paymentMethod);
 
     const sendOrder = async () => {
         dispatch(acceptOrder());
@@ -37,7 +37,6 @@ const Cart = (props) => {
             type: 'success',
             text1: 'Złożono zamówienie',
         })
-        setPaymentMethod('');
     };
 
     useEffect(() => {
@@ -64,13 +63,6 @@ const Cart = (props) => {
         // The cleanup function
         return () => {};
     }, [tableNumberId]);
-
-    useEffect(() => {
-        if(paymentMethod !== '' && paymentMethod !== null) {
-            dispatch(savePaymentMethod(paymentMethod));
-        }
-    }, [paymentMethod]);
-
 
     const addItemToCart = (item) => {
         dispatch(addToCart(item.id, "fromCart"));
@@ -104,8 +96,8 @@ const Cart = (props) => {
         }
     }
 
-    const handlePaymentMethod = (method) => {
-        setPaymentMethod(method);
+    const handlePaymentMethod = (paymentMethod) => {
+        dispatch(savePaymentMethod(paymentMethod));
     };
 
     return (
