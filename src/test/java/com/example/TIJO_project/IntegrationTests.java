@@ -1,7 +1,5 @@
 package com.example.TIJO_project;
 
-import com.example.TIJO_project.controller.OrderController;
-import com.example.TIJO_project.controller.QrCodeController;
 import com.example.TIJO_project.dto.OrderDto;
 import com.example.TIJO_project.dto.DishDto;
 import com.example.TIJO_project.dto.OrderItemDto;
@@ -14,17 +12,12 @@ import com.example.TIJO_project.service.OrderService;
 import com.example.TIJO_project.repository.DishRepository;
 import com.example.TIJO_project.mapper.DishMapper;
 import com.example.TIJO_project.service.QrCodeService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
