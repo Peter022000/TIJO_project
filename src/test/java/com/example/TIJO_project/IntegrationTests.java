@@ -412,7 +412,7 @@ class IntegrationTests {
 		assertEquals(1, acceptedOrder.getOrder().size());
 		assertEquals("1", acceptedOrder.getOrder().get(0).getDish().getId());
 		assertEquals(1, acceptedOrder.getOrder().get(0).getQuantity());
-		assertEquals(10.0, acceptedOrder.getOrder().get(0).getCost(), 0.01);
+		assertEquals(10.0, acceptedOrder.getOrder().get(0).getCost());
 		assertEquals(PaymentMethod.cash, acceptedOrder.getPaymentMethod());
 	}
 
