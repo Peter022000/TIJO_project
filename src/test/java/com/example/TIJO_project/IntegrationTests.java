@@ -320,7 +320,7 @@ class IntegrationTests {
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId("table123")
-				.cost(10.0) // Ustawienie początkowego kosztu na 10.0 (1 raz pizza)
+				.cost(10.0)
 				.order(Collections.singletonList(
 						OrderItemDto.builder()
 								.dish(pizzaDto)
@@ -376,7 +376,7 @@ class IntegrationTests {
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId(qrCode)
-				.cost(10.0) // Ustawienie początkowego kosztu na 10.0 (1 raz pizza)
+				.cost(10.0)
 				.order(Collections.singletonList(
 						OrderItemDto.builder()
 								.dish(pizzaDto)
