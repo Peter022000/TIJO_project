@@ -47,6 +47,7 @@ class UnitTests {
 
 	@Test
 	void testIsDishValid_ValidDish() {
+		// Given
 		Dish dbDish = Dish.builder()
 				.id("1")
 				.dishType(DishType.mainCourse)
@@ -67,13 +68,16 @@ class UnitTests {
 				.cost(20.0)
 				.build();
 
+		// When
 		boolean result = orderService.isDishValid(orderItemDto, dbDish);
 
+		// Then
 		assertTrue(result);
 	}
 
 	@Test
 	void testIsDishValid_InvalidDish() {
+		// Given
 		Dish dbDish = Dish.builder()
 				.id("1")
 				.dishType(DishType.mainCourse)
@@ -94,49 +98,94 @@ class UnitTests {
 				.cost(20.0)
 				.build();
 
+		// When
 		boolean result = orderService.isDishValid(orderItemDto, dbDish);
 
+		// Then
 		assertFalse(result);
 	}
 
 	@Test
 	void testIsDishTypeValid_ValidType() {
-		boolean result = orderService.isDishTypeValid("MAIN_COURSE", "MAIN_COURSE");
+		// Given
+		String orderItemType = DishType.mainCourse.name();
+		String dbDishType = DishType.mainCourse.name();
+
+		// When
+		boolean result = orderService.isDishTypeValid(orderItemType, dbDishType);
+
+		// Then
 		assertTrue(result);
 	}
 
 	@Test
 	void testIsDishTypeValid_InvalidType() {
-		boolean result = orderService.isDishTypeValid("DESSERT", "MAIN_COURSE");
+		// Given
+		String orderItemType = DishType.mainCourse.name();
+		String dbDishType = DishType.soup.name();
+
+		// When
+		boolean result = orderService.isDishTypeValid(orderItemType, dbDishType);
+
+		// Then
 		assertFalse(result);
 	}
 
 	@Test
 	void testIsDishNameValid_ValidName() {
-		boolean result = orderService.isDishNameValid("Chicken Curry", "Chicken Curry");
+		// Given
+		String orderItemName = "Chicken Curry";
+		String dbDishName = "Chicken Curry";
+
+		// When
+		boolean result = orderService.isDishNameValid(orderItemName, dbDishName);
+
+		// Then
 		assertTrue(result);
 	}
 
 	@Test
 	void testIsDishNameValid_InvalidName() {
-		boolean result = orderService.isDishNameValid("Invalid Dish Name", "Chicken Curry");
+		// Given
+		String orderItemName = "Chicken Curry";
+		String dbDishName = "Chicken";
+
+		// When
+		boolean result = orderService.isDishNameValid(orderItemName, dbDishName);
+
+		// Then
 		assertFalse(result);
 	}
 
 	@Test
 	void testIsDishPriceValid_ValidPrice() {
-		boolean result = orderService.isDishPriceValid(10.0, 10.0);
+		// Given
+		Double orderItemPrice = 10.0;
+		Double dbDishPrice = 10.0;
+
+		// When
+		boolean result = orderService.isDishPriceValid(orderItemPrice, dbDishPrice);
+
+		// Then
 		assertTrue(result);
 	}
 
 	@Test
 	void testIsDishPriceValid_InvalidPrice() {
-		boolean result = orderService.isDishPriceValid(15.0, 10.0);
+		// Given
+		Double orderItemPrice = 15.0;
+		Double dbDishPrice = 10.0;
+
+		// When
+		boolean result = orderService.isDishPriceValid(orderItemPrice, dbDishPrice);
+
+		// Then
 		assertFalse(result);
 	}
 
 	@Test
 	void testRecalculateCost() {
+		// Given
 		OrderItemDto orderItemDto1 = OrderItemDto.builder()
 				.dish(dishDto)
 				.quantity(2)
@@ -159,18 +208,23 @@ class UnitTests {
 
 		orderDto.setOrder(Arrays.asList(orderItemDto1, orderItemDto2));
 
+		// When
 		double result = orderService.recalculateCost(orderDto);
 
+		// Then
 		assertEquals(35.0, result);
 	}
 
 	@Test
 	void testRoundToTwoDecimalPlaces() {
+		// Given
 		double input = 12.3456;
 		double expectedOutput = 12.35;
 
+		// When
 		double result = orderService.roundToTwoDecimalPlaces(input);
 
+		// Then
 		assertEquals(expectedOutput, result);
 	}
 }

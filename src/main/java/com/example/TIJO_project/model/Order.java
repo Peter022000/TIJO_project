@@ -20,5 +20,4 @@ public class Order {
     private Double cost;
     private List<OrderItem> order;
     private PaymentMethod paymentMethod;
-    private LocalDateTime date;
 }

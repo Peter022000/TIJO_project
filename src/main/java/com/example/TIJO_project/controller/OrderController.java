@@ -30,10 +30,6 @@ public class OrderController {
     private final DishMapper dishMapper;
 
     @PostMapping(path = "/acceptOrder")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
     public ResponseEntity<?> acceptOrder(@RequestBody(required=false) OrderDto orderDto){
 
         return orderService.acceptOrder(orderDto);
@@ -45,10 +41,6 @@ public class OrderController {
     }
 
     @PostMapping(path = "/addToOrder")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
     public ResponseEntity<?> addToOrder(@RequestBody(required=false) OrderDto orderDto, @RequestParam String dishId){
 
         Optional<Dish> dish = dishRepository.findById(dishId);
@@ -62,10 +54,6 @@ public class OrderController {
     }
 
     @PostMapping(path = "/removeFromOrder")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderDto.class))),
-            @ApiResponse(responseCode = "400", description = "Bad Request", content = @Content(mediaType = "text/plain", schema = @Schema(implementation = String.class)))
-    })
     public ResponseEntity<?> removeFromOrder(@RequestBody(required=false) OrderDto orderDto, @RequestParam String dishId){
 
         Optional<Dish> dish = dishRepository.findById(dishId);

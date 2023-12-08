@@ -116,7 +116,6 @@ public class OrderService {
 
 
         Order order = orderMapper.toEntity(orderDto);
-        order = order.toBuilder().date(LocalDateTime.now()).build();
 
         return ResponseEntity.ok(orderRepository.save(order));
     }
