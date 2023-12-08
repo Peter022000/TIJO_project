@@ -94,7 +94,13 @@ class IntegrationTests {
 	@Test
 	public void testAddSameDishToOrder() throws Exception {
 		// Given
-		Dish dish = new Dish("1", DishType.mainCourse, "Pizza", 10.0, Arrays.asList("Cheese", "Tomato"));
+		Dish dish = Dish.builder()
+				.id("1")
+				.dishType(DishType.mainCourse)
+				.name("Pizza")
+				.price(10.0)
+				.ingredients(Arrays.asList("Cheese", "Tomato"))
+				.build();
 		dishRepository.save(dish);
 
 		DishDto dishDto = DishDto.builder()
