@@ -9,6 +9,12 @@ import com.example.TIJO_project.model.*;
 import com.example.TIJO_project.repository.DishRepository;
 import com.example.TIJO_project.repository.QrCodeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,6 +47,14 @@ class IntegrationTests {
 
 	@Autowired
 	private QrCodeRepository qrCodeRepository;
+
+	private static ObjectMapper mapper;
+
+	@BeforeAll
+	static void setUp() {
+		mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+	}
 
 	@Test
 	public void testAddToEmptyOrder() throws Exception {
@@ -81,7 +95,7 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		OrderDto updatedOrderDto = new ObjectMapper().readValue(content, OrderDto.class);
+		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(updatedOrderDto);
@@ -138,7 +152,7 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		OrderDto updatedOrderDto = new ObjectMapper().readValue(content, OrderDto.class);
+		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(updatedOrderDto);
@@ -210,7 +224,7 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		OrderDto updatedOrderDto = new ObjectMapper().readValue(content, OrderDto.class);
+		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(updatedOrderDto);
@@ -280,7 +294,7 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		OrderDto updatedOrderDto = new ObjectMapper().readValue(content, OrderDto.class);
+		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(updatedOrderDto);
@@ -343,7 +357,7 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		OrderDto updatedOrderDto = new ObjectMapper().readValue(content, OrderDto.class);
+		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(updatedOrderDto);
@@ -400,7 +414,8 @@ class IntegrationTests {
 
 		// Then
 		String content = result.getResponse().getContentAsString();
-		Order acceptedOrder = new ObjectMapper().readValue(content, Order.class);
+
+		Order acceptedOrder = mapper.readValue(content, Order.class);
 		System.out.println("Response Content: " + content);
 
 		assertNotNull(acceptedOrder);
@@ -418,7 +433,7 @@ class IntegrationTests {
 
 	private static String asJsonString(final Object obj) {
 		try {
-			return new ObjectMapper().writeValueAsString(obj);
+			return mapper.writeValueAsString(obj);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
