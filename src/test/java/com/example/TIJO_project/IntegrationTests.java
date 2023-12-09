@@ -485,7 +485,6 @@ class IntegrationTests {
 				.ingredients(List.of("Ingredient"))
 				.build();
 
-		// Save the invalid dish with the same ID but a different name
 		Dish invalidDishInDatabase = Dish.builder()
 				.id("invalidDishId")
 				.dishType(DishType.mainCourse)
@@ -521,7 +520,6 @@ class IntegrationTests {
 		String content = result.getResponse().getContentAsString();
 		System.out.println("Response Content: " + content);
 
-		// You can add additional assertions based on the error response if needed
 		assertEquals("One of the dishes is not valid", content);
 	}
 
@@ -549,7 +547,6 @@ class IntegrationTests {
 		String content = result.getResponse().getContentAsString();
 		System.out.println("Response Content: " + content);
 
-		// You can add additional assertions based on the error response if needed
 		assertEquals("Order is empty", content);
 	}
 
