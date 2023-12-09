@@ -61,7 +61,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Dish do not exist");
         }
 
-        if(orderDto.getOrder() == null){
+        if(orderDto.getOrder() == null || orderDto.getOrder().isEmpty()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order is empty");
         }
 

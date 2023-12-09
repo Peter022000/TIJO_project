@@ -5,6 +5,7 @@ import com.example.TIJO_project.config.EnableMongoTestServer;
 import com.example.TIJO_project.dto.DishDto;
 import com.example.TIJO_project.dto.OrderDto;
 import com.example.TIJO_project.dto.OrderItemDto;
+import com.example.TIJO_project.mapper.DishMapper;
 import com.example.TIJO_project.model.*;
 import com.example.TIJO_project.repository.DishRepository;
 import com.example.TIJO_project.repository.QrCodeRepository;
@@ -45,6 +46,9 @@ class IntegrationTests {
 
 	private static ObjectMapper mapper;
 
+	@Autowired
+	private DishMapper dishMapper;
+
 	@BeforeAll
 	static void setUp() {
 		mapper = new ObjectMapper();
@@ -63,18 +67,12 @@ class IntegrationTests {
 				.build();
 		dishRepository.save(dish);
 
-		DishDto dishDto = DishDto.builder()
-				.id("1")
-				.dishType(DishType.mainCourse)
-				.name("Pizza")
-				.price(10.0)
-				.ingredients(Arrays.asList("Cheese", "Tomato"))
-				.build();
+		DishDto dishDto = dishMapper.toDto(dish);
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId("table123")
 				.cost(0.0)
-				.order(null)
+				.order(List.of())
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
@@ -101,6 +99,32 @@ class IntegrationTests {
 	}
 
 	@Test
+	public void testAddNonExistingDishToEmptyOrder() throws Exception {
+		// Given
+		OrderDto orderDto = OrderDto.builder()
+				.tableNoId("table123")
+				.cost(0.0)
+				.order(List.of())
+				.paymentMethod(PaymentMethod.cash)
+				.build();
+
+		System.out.println("Request Content: " + orderDto);
+
+		// When
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/addToOrder")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(asJsonString(orderDto))
+						.param("dishId", "nonExistingDishId"))  // provide a non-existing dish ID here
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())  // expect a bad request status
+				.andReturn();
+
+		// Then
+		String content = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + content);
+		assertEquals("Dish do not exist", content);
+	}
+
+	@Test
 	public void testAddSameDishToOrder() throws Exception {
 		// Given
 		Dish dish = Dish.builder()
@@ -112,13 +136,7 @@ class IntegrationTests {
 				.build();
 		dishRepository.save(dish);
 
-		DishDto dishDto = DishDto.builder()
-				.id("1")
-				.dishType(DishType.mainCourse)
-				.name("Pizza")
-				.price(10.0)
-				.ingredients(Arrays.asList("Cheese", "Tomato"))
-				.build();
+		DishDto dishDto = dishMapper.toDto(dish);
 
 		OrderItemDto orderItemDto = OrderItemDto.builder()
 				.dish(dishDto)
@@ -178,21 +196,9 @@ class IntegrationTests {
 				.build();
 		dishRepository.save(pasta);
 
-		DishDto pizzaDto = DishDto.builder()
-				.id("1")
-				.dishType(DishType.mainCourse)
-				.name("Pizza")
-				.price(10.0)
-				.ingredients(Arrays.asList("Cheese", "Tomato"))
-				.build();
+		DishDto pizzaDto = dishMapper.toDto(pizza);
 
-		DishDto pastaDto = DishDto.builder()
-				.id("2")
-				.dishType(DishType.mainCourse)
-				.name("Pasta")
-				.price(8.0)
-				.ingredients(Arrays.asList("Tomato Sauce", "Basil"))
-				.build();
+		DishDto pastaDto = dishMapper.toDto(pasta);
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId("table123")
@@ -256,13 +262,7 @@ class IntegrationTests {
 				.build();
 		dishRepository.save(pizza);
 
-		DishDto pizzaDto = DishDto.builder()
-				.id("1")
-				.dishType(DishType.mainCourse)
-				.name("Pizza")
-				.price(10.0)
-				.ingredients(Arrays.asList("Cheese", "Tomato"))
-				.build();
+		DishDto pizzaDto = dishMapper.toDto(pizza);
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId("table123")
@@ -305,6 +305,60 @@ class IntegrationTests {
 		assertEquals(pizzaDto.getPrice(), pizzaOrderItem.getCost());
 
 		assertEquals(10.0, updatedOrderDto.getCost());
+	}
+
+	@Test
+	public void testDecreaseNonExistingDishQuantityInOrder() throws Exception {
+		// Given
+		Dish pizza = Dish.builder()
+				.id("1")
+				.dishType(DishType.mainCourse)
+				.name("Pizza")
+				.price(10.0)
+				.ingredients(Arrays.asList("Cheese", "Tomato"))
+				.build();
+		dishRepository.save(pizza);
+
+		Dish pasta = Dish.builder()
+				.id("2")
+				.dishType(DishType.mainCourse)
+				.name("Pasta")
+				.price(8.0)
+				.ingredients(Arrays.asList("Tomato Sauce", "Basil"))
+				.build();
+		dishRepository.save(pasta);
+
+		DishDto pizzaDto = dishMapper.toDto(pizza);
+
+		OrderDto orderDto = OrderDto.builder()
+				.tableNoId("table123")
+				.cost(20.0)
+				.order(Collections.singletonList(
+						OrderItemDto.builder()
+								.dish(pizzaDto)
+								.quantity(2)
+								.cost(20.0)
+								.build()
+				))
+				.paymentMethod(PaymentMethod.cash)
+				.build();
+
+		System.out.println("Request Content: " + orderDto);
+
+		// When
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/removeFromOrder")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(asJsonString(orderDto))
+						.param("dishId", pasta.getId()))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn();
+
+		// Then
+		String content = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + content);
+
+		// You can add additional assertions based on the error response if needed
+		assertEquals("Order do not include dish", content);
 	}
 
 	@Test
@@ -375,13 +429,7 @@ class IntegrationTests {
 
 		String qrCode = "table123";
 
-		DishDto pizzaDto = DishDto.builder()
-				.id("1")
-				.dishType(DishType.mainCourse)
-				.name("Pizza")
-				.price(10.0)
-				.ingredients(Arrays.asList("Cheese", "Tomato"))
-				.build();
+		DishDto pizzaDto = dishMapper.toDto(pizza);
 
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId(qrCode)
@@ -425,6 +473,86 @@ class IntegrationTests {
 		assertEquals(10.0, acceptedOrder.getOrder().get(0).getCost());
 		assertEquals(PaymentMethod.cash, acceptedOrder.getPaymentMethod());
 	}
+
+	@Test
+	public void testAcceptOrderWithInvalidDish() throws Exception {
+		// Given
+		DishDto invalidDishDto = DishDto.builder()
+				.id("invalidDishId")
+				.dishType(DishType.mainCourse)
+				.name("Invalid name")
+				.price(20.0)
+				.ingredients(List.of("Ingredient"))
+				.build();
+
+		// Save the invalid dish with the same ID but a different name
+		Dish invalidDishInDatabase = Dish.builder()
+				.id("invalidDishId")
+				.dishType(DishType.mainCourse)
+				.name("Valid name")
+				.price(20.0)
+				.ingredients(List.of("Ingredient"))
+				.build();
+		dishRepository.save(invalidDishInDatabase);
+
+		OrderDto orderDto = OrderDto.builder()
+				.tableNoId("table123")
+				.cost(20.0)
+				.order(Collections.singletonList(
+						OrderItemDto.builder()
+								.dish(invalidDishDto)
+								.quantity(1)
+								.cost(20.0)
+								.build()
+				))
+				.paymentMethod(PaymentMethod.cash)
+				.build();
+
+		System.out.println("Request Content: " + orderDto);
+
+		// When
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/acceptOrder")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(asJsonString(orderDto)))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn();
+
+		// Then
+		String content = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + content);
+
+		// You can add additional assertions based on the error response if needed
+		assertEquals("One of the dishes is not valid", content);
+	}
+
+	@Test
+	public void testAcceptOrderWithNoDishes() throws Exception {
+		// Given
+
+		OrderDto orderDto = OrderDto.builder()
+				.tableNoId("table123")
+				.cost(20.0)
+				.order(List.of())
+				.paymentMethod(PaymentMethod.cash)
+				.build();
+
+		System.out.println("Request Content: " + orderDto);
+
+		// When
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/acceptOrder")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(asJsonString(orderDto)))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andReturn();
+
+		// Then
+		String content = result.getResponse().getContentAsString();
+		System.out.println("Response Content: " + content);
+
+		// You can add additional assertions based on the error response if needed
+		assertEquals("Order is empty", content);
+	}
+
 
 	private static String asJsonString(final Object obj) {
 		try {

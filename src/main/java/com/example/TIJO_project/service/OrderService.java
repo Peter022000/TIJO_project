@@ -36,7 +36,7 @@ public class OrderService {
                 .quantity(1)
                 .build();
 
-        if(orderDto.getOrder() == null){
+        if(orderDto.getOrder() == null || orderDto.getOrder().isEmpty()){
             List<OrderItemDto> orderItem = List.of(newDishToList);
             orderDto = orderDto.toBuilder().order(orderItem).build();
         } else {
@@ -97,6 +97,10 @@ public class OrderService {
 
     public ResponseEntity<?> acceptOrder(OrderDto orderDto) {
         List<OrderItemDto> orderItems = orderDto.getOrder();
+
+        if(orderDto.getOrder().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Order is empty");
+        }
 
         if(!validateDishesInOrder(orderItems)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("One of the dishes is not valid");
