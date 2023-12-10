@@ -17,4 +17,13 @@ public class DishService {
     public List<Dish> getAllDishes() {
         return dishRepository.findAll();
     }
+
+    public Long count() {
+        return dishRepository.count();
+    }
+
+    public void saveAll(List<Dish> dishes) {
+        dishRepository.saveAll(dishes);
+    }
+
 }
