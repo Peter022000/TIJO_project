@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.TIJO_project.config.EnableMongoTestServer;
 import com.example.TIJO_project.dto.DishDto;
 import com.example.TIJO_project.dto.OrderDto;
 import com.example.TIJO_project.dto.OrderItemDto;
@@ -17,13 +18,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 
 @SpringBootTest
+@EnableMongoTestServer
+@EnableMongoRepositories(basePackages = "com.example.TIJO_project.repository")
 class UnitTests {
 	@InjectMocks
 	private OrderService orderService;
-
 	private OrderDto orderDto;
 	private DishDto dishDto;
 
