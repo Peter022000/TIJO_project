@@ -76,8 +76,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/addToOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -86,11 +84,10 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertNotNull(updatedOrderDto);
 		assertEquals(1, updatedOrderDto.getOrder().size());
 		assertEquals(dishDto.getId(), updatedOrderDto.getOrder().get(0).getDish().getId());
@@ -108,8 +105,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/addToOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -118,9 +113,9 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())  // expect a bad request status
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
-		System.out.println("Response Content: " + content);
+
+		// Then
 		assertEquals("Dish do not exist", content);
 	}
 
@@ -153,8 +148,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/addToOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -163,11 +156,10 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertNotNull(updatedOrderDto);
 		assertEquals(1, updatedOrderDto.getOrder().size());
 		assertEquals(dishDto.getId(), updatedOrderDto.getOrder().get(0).getDish().getId());
@@ -213,8 +205,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/addToOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -223,13 +213,9 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
-		System.out.println("Response Content: " + content);
 
-		assertNotNull(updatedOrderDto);
-		assertEquals(2, updatedOrderDto.getOrder().size());
 
 		OrderItemDto pizzaOrderItem = updatedOrderDto.getOrder().stream()
 				.filter(orderItem -> orderItem.getDish().getId().equals(pizzaDto.getId()))
@@ -241,10 +227,12 @@ class IntegrationTests {
 				.findFirst()
 				.orElse(null);
 
+		// Then
+		assertNotNull(updatedOrderDto);
+		assertEquals(2, updatedOrderDto.getOrder().size());
 		assertNotNull(pizzaOrderItem);
 		assertEquals(1, pizzaOrderItem.getQuantity());
 		assertEquals(pizzaDto.getPrice(), pizzaOrderItem.getCost());
-
 		assertNotNull(pastaOrderItem);
 		assertEquals(1, pastaOrderItem.getQuantity());
 		assertEquals(pastaDto.getPrice(), pastaOrderItem.getCost());
@@ -277,8 +265,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/removeFromOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -287,23 +273,20 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
-		System.out.println("Response Content: " + content);
-
-		assertNotNull(updatedOrderDto);
-		assertEquals(1, updatedOrderDto.getOrder().size());
 
 		OrderItemDto pizzaOrderItem = updatedOrderDto.getOrder().stream()
 				.filter(orderItem -> orderItem.getDish().getId().equals(pizzaDto.getId()))
 				.findFirst()
 				.orElse(null);
 
+		// Then
+		assertNotNull(updatedOrderDto);
+		assertEquals(1, updatedOrderDto.getOrder().size());
 		assertNotNull(pizzaOrderItem);
 		assertEquals(1, pizzaOrderItem.getQuantity());
 		assertEquals(pizzaDto.getPrice(), pizzaOrderItem.getCost());
-
 		assertEquals(10.0, updatedOrderDto.getCost());
 	}
 
@@ -343,8 +326,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/removeFromOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -353,11 +334,9 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
-		System.out.println("Response Content: " + content);
 
-		// You can add additional assertions based on the error response if needed
+		// Then
 		assertEquals("Order do not include dish", content);
 	}
 
@@ -394,8 +373,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/removeFromOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -404,14 +381,12 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 		OrderDto updatedOrderDto = mapper.readValue(content, OrderDto.class);
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertNotNull(updatedOrderDto);
 		assertTrue(updatedOrderDto.getOrder().isEmpty());
-
 		assertEquals(0.0, updatedOrderDto.getCost(), 0.01);
 	}
 
@@ -446,8 +421,6 @@ class IntegrationTests {
 
 		qrCodeRepository.save(QrCode.builder().id(qrCode).qrCode(qrCode).build());
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/acceptOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -455,15 +428,13 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
 
 		Order acceptedOrder = mapper.readValue(content, Order.class);
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertNotNull(acceptedOrder);
 		assertNotNull(acceptedOrder.getId());
-
 		assertEquals("table123", acceptedOrder.getTableNoId());
 		assertEquals(10.0, acceptedOrder.getCost());
 		assertNotNull(acceptedOrder.getOrder());
@@ -507,7 +478,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
 
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/acceptOrder")
@@ -516,17 +486,15 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertEquals("One of the dishes is not valid", content);
 	}
 
 	@Test
 	public void testAcceptOrderWithNoDishes() throws Exception {
 		// Given
-
 		OrderDto orderDto = OrderDto.builder()
 				.tableNoId("table123")
 				.cost(20.0)
@@ -534,8 +502,6 @@ class IntegrationTests {
 				.paymentMethod(PaymentMethod.cash)
 				.build();
 
-		System.out.println("Request Content: " + orderDto);
-
 		// When
 		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/order/acceptOrder")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -543,10 +509,9 @@ class IntegrationTests {
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())
 				.andReturn();
 
-		// Then
 		String content = result.getResponse().getContentAsString();
-		System.out.println("Response Content: " + content);
 
+		// Then
 		assertEquals("Order is empty", content);
 	}
 

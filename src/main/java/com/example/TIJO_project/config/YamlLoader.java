@@ -17,7 +17,6 @@ public class YamlLoader {
             YamlReader yamlReader = new YamlReader(new InputStreamReader(inputStream));
             return yamlReader.read(DishesConfig.class);
         } catch (Exception e) {
-            System.out.println("Error loading dishes from YAML file: " + e.getMessage());
             e.printStackTrace();
             throw new RuntimeException("Error loading dishes from YAML file", e);
         }
