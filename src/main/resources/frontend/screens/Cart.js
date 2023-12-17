@@ -79,7 +79,7 @@ const Cart = (props) => {
                 text1: 'Niepoprawne zamówienie',
                 text2: 'Koszyk jest pusty',
             });
-        }else if(paymentMethod === '') {
+        }else if(paymentMethod === '' || paymentMethod === null) {
             Toast.show({
                 type: 'error',
                 text1: 'Niepoprawne zamówienie',

@@ -1,6 +1,6 @@
 const initialState = {
     dishes: [],
-    tableNoId: '',
+    tableNoId: '6576b67b0d86b15e669bff3f',
     paymentMethod: null,
     cost: '',
 };
