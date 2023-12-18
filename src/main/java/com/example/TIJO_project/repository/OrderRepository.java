@@ -9,6 +9,4 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends MongoRepository <Order, String> {
-    @Query("{ 'userId' : ?0 }")
-    List<Order> findAllByUserId(String userId);
 }
